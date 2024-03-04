@@ -9,7 +9,7 @@ typedef struct {
 } REGISTRO;
 
 typedef struct {
-    REGISTRO A[MAX];
+    REGISTRO A[MAX+1];
     int nroElement;
 } LISTA;
 
@@ -40,6 +40,16 @@ bool adicionarLista(LISTA* l, REGISTRO reg ,int i) {
     l->nroElement++;
     return true;
 }
+bool adicionarListaOrd(LISTA* l, REGISTRO reg) {
+    if(l->nroElement == MAX) return false;
+    int pos = l->nroElement;
+    while(pos >= 0 && l->A[pos-1].chave > reg.chave){
+        l->A[pos] = l->A[pos-1];
+        pos--;
+    }
+    l->A[pos] = reg;
+    l->nroElement++;
+}
 int buscaSequencial(LISTA* l, int valor){
     int i=0;
     while(i < l->nroElement){
@@ -50,9 +60,30 @@ int buscaSequencial(LISTA* l, int valor){
     }
     return -1;
 }
+int buscaSentinela(LISTA* l, int valor){
+    int i =0;
+    l->A[l->nroElement].chave = valor;
+    while(l->A[i].chave != valor) i++;
+    if(i == l->nroElement) return -1;
+    else return i;
+}
+int buscaBinaria(LISTA* l, int valor){
+    int esq,dir,meio;
+    esq = 0;
+    dir = l->nroElement -1;
+    while(esq <= dir){
+        meio = (dir + esq)/2;
+        if(l->A[meio].chave == valor) return meio;
+        else{
+            if(l->A[meio].chave < valor) esq = meio +1;
+            else dir = meio -1;
+        }
+    }
+    return -1;
+}
 bool excluirElement(LISTA* l, int valor){
     int pos,j;
-    pos = buscaSequencial(l,valor);
+    pos = buscaBinaria(l,valor);
     if(pos == -1) return false;
     for(j = pos; j < l->nroElement; j++){
         l->A[j] = l->A[j+1];
@@ -68,14 +99,15 @@ int main(void) {
     reg1.chave = 10;
     reg2.chave = 30;
 
-    adicionarLista(&a, reg1, 0);
-    adicionarLista(&a, reg2, 1);
+    adicionarListaOrd(&a, reg1);
+    adicionarListaOrd(&a, reg2);
 
     excluirElement(&a, 10);
 
     cout << tamanhoLista(&a) << endl;
     exibirLista(&a);
     cout << buscaSequencial(&a, 2) << endl;
+    cout << buscaSequencial(&a, 30) << endl;
 
     return 0;
 }
