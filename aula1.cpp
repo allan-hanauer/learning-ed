@@ -16,6 +16,9 @@ typedef struct {
 void inicializarLista(LISTA* l) {
     l->nroElement = 0;
 }
+void reinicializarLista(LISTA* l) {
+    l->nroElement = 0;
+}
 int tamanhoLista(LISTA* l){
     return l->nroElement;
 }
@@ -47,15 +50,32 @@ int buscaSequencial(LISTA* l, int valor){
     }
     return -1;
 }
-
+bool excluirElement(LISTA* l, int valor){
+    int pos,j;
+    pos = buscaSequencial(l,valor);
+    if(pos == -1) return false;
+    for(j = pos; j < l->nroElement; j++){
+        l->A[j] = l->A[j+1];
+    }
+    l->nroElement --;
+    return true;
+}
 int main(void) {
     LISTA a;
     inicializarLista(&a);
-    adicionarLista(&a,10);
-    adicionarLista(&a,30);
+
+    REGISTRO reg1, reg2;
+    reg1.chave = 10;
+    reg2.chave = 30;
+
+    adicionarLista(&a, reg1, 0);
+    adicionarLista(&a, reg2, 1);
+
+    excluirElement(&a, 10);
+
     cout << tamanhoLista(&a) << endl;
     exibirLista(&a);
-    cout << buscaSequencial(&a,2) << endl;
+    cout << buscaSequencial(&a, 2) << endl;
 
     return 0;
 }
