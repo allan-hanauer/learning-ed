@@ -1,77 +1,63 @@
 #include <iostream>
-using namespace std;
+#include <vector>
 
-struct Value {
-    int price;
-};
 
-struct Node {
-    string key;
-    Value* price = nullptr;
-    Node* next = nullptr;
-};
 
-struct HashTable {
-    Node* First = nullptr;
+template<typename K, typename V>
+class HashTable {
+private:
+    std::vector<std::pair<K, V>> table;
+    size_t size;
 
-    void insertKey(string key) {
-        Node* current = First;
-        while (current != nullptr) {
-            if (current->key == key) {
-                return;
-            }
-            current = current->next;
-        }
+public:
+    HashTable() : size(0) {}
 
-        Node* newNode = new Node();
-        newNode->key = key;
-        if (First == nullptr) {
-            First = newNode;
-        } else {
-            current = First;
-            while (current->next != nullptr) {
-                current = current->next;
-            }
-            current->next = newNode;
-        }
+    void insert(const K& key, const V& value) {
+        table.push_back(std::make_pair(key, value));
+        size++;
     }
 
-    void insertValue(string key, int value) {
-        Value* newValue = new Value();
-        newValue->price = value;
-        Node* current = First;
-        while (current != nullptr) {
-            if (current->key == key) {
-                current->price = newValue;
-                return;
-            } else {
-                current = current->next;
+    bool remove(const K& key) {
+        for (auto it = table.begin(); it != table.end(); ++it) {
+            if (it->first == key) {
+                table.erase(it);
+                size--;
+                return true;
             }
         }
-        return;
+        return false;
     }
-
-    void print() {
-        Node* current = First;
-        cout << "{" << endl;
-        while (current != nullptr) {
-            if (current->price != nullptr) {
-                cout << current->key << " : " << current->price->price << ", " << endl;
+    V* find(const K& key) {
+        for (auto& entry : table) {
+            if (entry.first == key) {
+                return &entry.second;
             }
-            current = current->next;
         }
-        cout << "}" << endl;
+        return nullptr;
+    }
+    size_t getSize() const {
+        return size;
     }
 };
 
-int main(void) {
-    HashTable a1;
-    a1.insertKey("Banana");
-    a1.insertKey("Maca");
-    a1.insertValue("Banana", 10);
-    a1.insertKey("Morango");
-    a1.insertValue("Morango", 10);
-    a1.insertValue("Maca", 20);
-    a1.print();
+int main() {
+    HashTable<int, int> ht;
+
+    ht.insert(5, 10);
+    ht.insert(15, 20);
+    ht.insert(25, 30);
+
+    std::cout << "Tamanho: " << ht.getSize() << std::endl;
+
+    int* val = ht.find(15);
+    if (val) {
+        std::cout << "Valor da chave 15: " << *val << std::endl;
+    } else {
+        std::cout << "Chave 15 não encontrada" << std::endl;
+    }
+
+    ht.remove(15);
+    std::cout << "Tamanho depois de remover: " << ht.getSize() << std::endl;
+
     return 0;
 }
