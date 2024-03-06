@@ -2,68 +2,84 @@
 
 using namespace std;
 
-struct No {
+struct Node {
     int value;
-    No* next = nullptr;
+    Node* next = nullptr;
 };
 
-struct Pilha {
-    No* Header = nullptr;
+struct Stack {
+    Node* top = nullptr;
 
-    void append(int value) {
-        No* newno = new No;
-        newno->value = value;
-        newno->next = Header;
-        Header = newno;
+    void push(int value) {
+        Node* newNode = new Node;
+        newNode->value = value;
+        newNode->next = top;
+        top = newNode;
     }
 
-    bool print() {
-        if (Header == nullptr){cout <<"[]";  return false;}
-        No* current = Header;
+    void print() {
+        if (top == nullptr) {
+            cout << "[]";
+            return;
+        }
+        Node* current = top;
         cout << "[";
         while (current != nullptr) {
-            if(current->next == nullptr){
+            if (current->next == nullptr) {
                 cout << current->value << "]";
-            }else{
-            cout << current->value <<",";
+            } else {
+                cout << current->value << ",";
             }
             current = current->next;
         }
+    }
+
+    bool pop() {
+        if (top == nullptr) {
+            return false;
+        }
+        Node* temp = top;
+        top = top->next;
+        delete temp; // Libera memória do nó removido
         return true;
     }
-    bool pop(){
-        if(Header == nullptr) return false;
-        Header = Header->next;
-        return true;
-    }
-    int findValue(int value){
-        No* current = Header;
-        int i= 0;
-        while(current != nullptr){
-            if(current->value == value){
-                return i;
-            }else{
-                current = current->next;
-                i++;
+
+    int findValue(int value) {
+        Node* current = top;
+        int index = 0;
+        while (current != nullptr) {
+            if (current->value == value) {
+                return index;
             }
+            current = current->next;
+            index++;
         }
         return -1;
     }
 };
 
 int main() {
-    Pilha a1;
-    a1.append(10);
-    a1.print();
-    a1.append(20);
-    a1.print();
-    a1.append(25);
-    a1.append(31);
-    a1.print();
-    cout << a1.findValue(10) << endl;
-    a1.pop();
-    a1.pop();
-    a1.pop();
-    a1.print();
+    Stack stack;
+    stack.push(10);
+    stack.print();
+    cout << endl;
+
+    stack.push(20);
+    stack.print();
+    cout << endl;
+
+    stack.push(25);
+    stack.push(31);
+    stack.print();
+    cout << endl;
+
+    cout << "Index do numero 10: " << stack.findValue(10) << endl;
+
+    stack.pop();
+    stack.pop();
+    stack.pop();
+    stack.print();
+    cout << endl;
+
     return 0;
 }
