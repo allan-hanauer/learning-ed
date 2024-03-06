@@ -56,7 +56,7 @@ struct Queue {
     }
 
     bool isEmpty() {
-        return (first == nullptr) || (last == nullptr);
+        return (first == nullptr);
     }
 
     ~Queue() {
