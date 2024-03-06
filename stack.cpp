@@ -40,14 +40,14 @@ struct Stack {
         }
         Node* temp = top;
         top = top->next;
-        delete temp; // Libera memória do nó removido
+        delete temp;
         return true;
     }
 
     int findValue(int value) {
         Node* current = top;
         int index = 0;
-        while (current != nullptr) {
+        while (current == nullptr) {
             if (current->value == value) {
                 return index;
             }
