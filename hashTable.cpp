@@ -1,63 +1,50 @@
 #include <iostream>
-#include <vector>
+#include <cmath>
 
+using namespace std;
 
-
-template<typename K, typename V>
-class HashTable {
-private:
-    std::vector<std::pair<K, V>> table;
-    size_t size;
-
-public:
-    HashTable() : size(0) {}
-
-    void insert(const K& key, const V& value) {
-        table.push_back(std::make_pair(key, value));
-        size++;
-    }
-
-    bool remove(const K& key) {
-        for (auto it = table.begin(); it != table.end(); ++it) {
-            if (it->first == key) {
-                table.erase(it);
-                size--;
-                return true;
-            }
-        }
-        return false;
-    }
-    V* find(const K& key) {
-        for (auto& entry : table) {
-            if (entry.first == key) {
-                return &entry.second;
-            }
-        }
-        return nullptr;
-    }
-    size_t getSize() const {
-        return size;
-    }
+struct No {
+    int value = -1;
+    No* collision = nullptr;
 };
 
-int main() {
-    HashTable<int, int> ht;
+class HashTable {
+    public:
+        int Size;
+        No Arr[6];
 
-    ht.insert(5, 10);
-    ht.insert(15, 20);
-    ht.insert(25, 30);
+    public:
+        HashTable(int Size) {
+            this->Size = Size;
+            Arr = new No[Size];
+        }
+        void append(string key, int value){
+            if(Arr[0].value == -1 && Arr[0].collision == nullptr){
+                    Arr[0]->value = value;
+            }
+        }
+        int hashCreate(string a){
+            const int prime = 31;
+            const int modulo = 100;
 
-    std::cout << "Tamanho: " << ht.getSize() << std::endl;
+            long long sum = 0;
+            for(int i = 0; i < a.length(); i++) {
+                sum += (sum * prime + a[i]) % modulo;
+            }
 
-    int* val = ht.find(15);
-    if (val) {
-        std::cout << "Valor da chave 15: " << *val << std::endl;
-    } else {
-        std::cout << "Chave 15 não encontrada" << std::endl;
-    }
+            return sum;
+        }
+        ~HashTable() {
+            delete[] Arr;
+        }
 
-    ht.remove(15);
-    std::cout << "Tamanho depois de remover: " << ht.getSize() << std::endl;
+};
 
+
+int main(void){
+    HashTable* a = new HashTable(100);
+    a->append("carro",10);
+    a->append("carro",20);
+    cout << a->Arr[0].collision->value;
     return 0;
 }
